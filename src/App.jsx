@@ -4,6 +4,8 @@ import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import AllDonationsPage from "./pages/AllDonationsPage";
+import ReportsPage from "./pages/ReportsPage";
 
 function App() {
   return (
@@ -15,6 +17,9 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/all-donations" element={<AllDonationsPage />} />
+            <Route path="/all-reports" element={<ReportsPage />} />
+
           </Routes>
         </div>
         <Footer />
