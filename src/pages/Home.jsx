@@ -45,7 +45,7 @@ const Home = () => {
         ],
     };
 
-    // دالة لعرض كل سلايدر مع أزرار التحكم
+    // fuvction to render the slider
     const renderProjectsSlider = (title, projectsList, sliderRef) => (
         <div className="mb-8 relative">
             <h1 className="text-2xl font-bold mb-4">{title}</h1>
