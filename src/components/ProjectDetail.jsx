@@ -20,6 +20,17 @@ const ProjectDetail = () => {
     fetchProject(); // Call the function to fetch data
   }, [id]); // Dependency array with the ID to re-fetch when the project ID changes
 
+  const handleCancelProject = async () => {
+    try {
+      const response = await api.patch(`/projects/${id}/cancel/`);
+      alert(response.data.message);
+      setProject({ ...project, is_active: false });
+    } catch (error) {
+      console.error("Error canceling project:", error);
+      alert("Unable to cancel the project.");
+    }
+  };
+
   if (!project) {
     return <div>Loading...</div>; // Show a loading state if the project is not yet fetched
   }
@@ -31,7 +42,12 @@ const ProjectDetail = () => {
       <p><strong>Target:</strong> {project.total_target}</p>
       <p><strong>Current Donations:</strong> {project.current_donations}</p>
       <img src={`http://127.0.0.1:8000${project.image}`} alt={project.title} />
-      </div>
+      {project.is_active && (
+        <button onClick={handleCancelProject} className="btn btn-danger">
+          Cancel Project
+        </button>
+      )}
+    </div>
   );
 };
 

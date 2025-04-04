@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // For navigation
 import api from '../api';  // Import Axios
 import './css/ProjectForm.css';  // You can create a custom CSS file for the form styles
 
@@ -10,6 +11,15 @@ const ProjectForm = () => {
   const [endTime, setEndTime] = useState('');
   const [image, setImage] = useState(null);
   const [error, setError] = useState('');
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      alert('You must be logged in to create a project.');
+      navigate('/login'); // Redirect to login page
+    }
+  }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
