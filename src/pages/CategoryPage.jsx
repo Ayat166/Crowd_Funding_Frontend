@@ -57,7 +57,9 @@ const CategoryPage = () => {
             {projects.length > 0 ? (
                 <div className="row">
                     {projects.map((project) => (
-                        <ProjectCard key={project.id} project={project} />
+                        <div className="col-md-6 mb-6" key={project.id}>
+                            <ProjectCard key={project.id} project={project} />
+                        </div>
                     ))}
                 </div>
             ) : (

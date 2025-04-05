@@ -1,9 +1,10 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import Slider from "react-slick";
-import { fetchHomeProjects } from "../api";
+import { fetchHomeProjects, searchProjects } from "../api";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import ProjectCard from "../components/ProjectCard";
 
 const Home = () => {
     //console.log("Home - Component");
@@ -28,7 +29,7 @@ const Home = () => {
         };
         getProjects();
     }, []);
-
+    
     if (loading) return <p className="text-center text-lg font-bold">Loading ...</p>;
     if (!projects) return <p className="text-center text-lg font-bold text-red-500">Failed to load projects.</p>;
 
@@ -45,7 +46,7 @@ const Home = () => {
         ],
     };
 
-    // fuvction to render the slider
+    // function to render the slider
     const renderProjectsSlider = (title, projectsList, sliderRef) => (
         <div className="mb-8 relative">
             <h1 className="text-2xl font-bold mb-4">{title}</h1>
@@ -63,18 +64,17 @@ const Home = () => {
                     <button
                         onClick={() => sliderRef.current.slickNext()}
                         className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full z-10"
-
                     >
                         ❯
                     </button>
 
                     {/* Slider */}
+                    
                     <Slider ref={sliderRef} {...sliderSettings}>
                         {projectsList.map((project) => (
                             <div key={project.id} className="p-4">
                                 <div className="bg-white shadow-lg rounded-lg p-4">
-                                    <h2 className="text-xl font-semibold">{project.title}</h2>
-                                    <p className="text-gray-600">{project.details}</p>
+                                <ProjectCard project={project} />
                                 </div>
                             </div>
                         ))}
@@ -87,6 +87,7 @@ const Home = () => {
             )}
         </div>
     );
+
 
     return (
         <div className="container mx-auto p-4">
