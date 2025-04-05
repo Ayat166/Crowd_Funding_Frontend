@@ -1,62 +1,179 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 function Signup() {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    first_name: "",
+    last_name: "",
     email: "",
     password: "",
+    confirmPassword: "",
+    mobile: "",
+    profile_picture: null,
   });
+  const [successMessage, setSuccessMessage] = useState("");
+
+  const [phoneError, setPhoneError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+ 
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    const updatedFormData = { ...formData, [name]: value };
+    setFormData(updatedFormData);
+
+    if (name === "password" || name === "confirmPassword") {
+      if (
+        updatedFormData.password &&
+        updatedFormData.confirmPassword &&
+        updatedFormData.password !== updatedFormData.confirmPassword
+      ) {
+        setPasswordError("Passwords do not match");
+      } else {
+        setPasswordError("");
+      }
+    }
   };
 
-  const handleSignup = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
-    console.log("Signing up:", formData);
+    const formDataToSend = new FormData();
+
+    formDataToSend.append("first_name", formData.first_name);
+    formDataToSend.append("last_name", formData.last_name);
+    formDataToSend.append("email", formData.email);
+    formDataToSend.append("password", formData.password);
+    formDataToSend.append("mobile", formData.mobile);
+
+    // Append the profile picture if it exists
+    if (formData.profile_picture) {
+      formDataToSend.append("profile_picture", formData.profile_picture);
+    }
+
+    try {
+      const response = await axios.post("http://127.0.0.1:8000/api/users/register/", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      setSuccessMessage("Registration successful!");
+      setFormData({
+        first_name: "",
+        last_name: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+        mobile: "",
+        profile_picture: null,
+      });
+      setTimeout(() => setSuccessMessage(""), 3000);
+
+    } catch (error) {
+      console.error("Error during signup:", error.response ? error.response.data : error);
+    }
   };
 
   return (
-    <div className="container d-flex justify-content-center align-items-center vh-100">
+
+    <div className="container d-flex justify-content-center align-items-center vh-10">
       <div className="card p-4 shadow w-50">
         <h1 className="text-center">Sign Up</h1>
+        {successMessage && (
+          <div className="alert alert-success text-center mb-3">
+            {successMessage}
+          </div>
+        )}
         <form onSubmit={handleSignup}>
-          <div className="mb-3">
+          <div className="mb-1">
             <label className="form-label">First Name</label>
             <input
               type="text"
-              name="firstName"
+              name="first_name"
               className="form-control"
+              value={formData.first_name}
               onChange={handleChange}
             />
           </div>
-          <div className="mb-3">
+          <div className="mb-1">
             <label className="form-label">Last Name</label>
             <input
               type="text"
-              name="lastName"
+              name="last_name"
               className="form-control"
+              value={formData.last_name}
               onChange={handleChange}
             />
           </div>
-          <div className="mb-3">
+          <div className="mb-1">
             <label className="form-label">Email</label>
             <input
               type="email"
               name="email"
               className="form-control"
+              value={formData.email}
               onChange={handleChange}
             />
           </div>
-          <div className="mb-3">
+          <div className="mb-1">
             <label className="form-label">Password</label>
             <input
               type="password"
               name="password"
               className="form-control"
+              value={formData.password}
               onChange={handleChange}
+            />
+          </div>
+          <small className="text-muted">
+            Password must be at least 8 characters long, contain an uppercase letter and a number.
+          </small>
+          <div className="mb-1">
+            <label className="form-label">Confirm Password</label>
+            <input
+              type="password"
+              name="confirmPassword"
+              className={`form-control ${passwordError ? "is-invalid" : ""}`}
+              value={formData.confirmPassword}
+              onChange={handleChange}
+            />
+            {passwordError && (
+              <div className="invalid-feedback">{passwordError}</div>
+            )}
+          </div>
+
+          <div className="mb-1">
+            <label className="form-label">Phone Number</label>
+            <input
+              type="text"
+              name="mobile"
+              className={`form-control ${phoneError ? 'is-invalid' : ''}`}
+              value={formData.mobile}
+              onChange={(e) => {
+                const value = e.target.value;
+                setFormData({ ...formData, mobile: value });
+
+                const egyptianRegex = /^01[0-2,5][0-9]{8}$/;
+                if (!egyptianRegex.test(value)) {
+                  setPhoneError("Invalid Egyptian phone number");
+                } else {
+                  setPhoneError("");
+                }
+              }}
+            />
+            {phoneError && <div className="invalid-feedback">{phoneError}</div>}
+          </div>
+
+          <div className="mb-1">
+            <label className="form-label">Profile Picture</label>
+            <input
+              type="file"
+              name="profile_picture"
+              className="form-control"
+              onChange={(e) => {
+                const file = e.target.files[0];
+                setFormData({ ...formData, profile_picture: file });
+              }}
             />
           </div>
           <button type="submit" className="btn btn-primary w-100">
@@ -73,5 +190,6 @@ function Signup() {
     </div>
   );
 }
+
 
 export default Signup;
