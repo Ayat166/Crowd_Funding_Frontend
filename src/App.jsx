@@ -7,6 +7,9 @@ import Signup from "./pages/Signup";
 import AllDonationsPage from "./pages/AllDonationsPage";
 import ReportsPage from "./pages/ReportsPage";
 
+import ProjectsList from "./components/ProjectsList"; // Fixed import path
+import ProjectDetail from "./components/ProjectDetail"; // Fixed import path
+import ProjectForm from "./components/ProjectForm"; // Fixed import path
 function App() {
   return (
     <Router>
@@ -20,6 +23,9 @@ function App() {
             <Route path="/all-donations" element={<AllDonationsPage />} />
             <Route path="/all-reports" element={<ReportsPage />} />
 
+            <Route path="/projects/list" exact element={<ProjectsList />} />
+            <Route path="/projects/create" element={<ProjectForm />} />
+            <Route path="/projects/:id" element={<ProjectDetail />} />
           </Routes>
         </div>
         <Footer />
