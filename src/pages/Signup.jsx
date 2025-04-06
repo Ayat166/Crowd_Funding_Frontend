@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function Signup() {
   const [formData, setFormData] = useState({
@@ -13,10 +14,11 @@ function Signup() {
     profile_picture: null,
   });
   const [successMessage, setSuccessMessage] = useState("");
-
+  const [errorMessage, setErrorMessage] = useState("");
   const [phoneError, setPhoneError] = useState("");
   const [passwordError, setPasswordError] = useState("");
- 
+  const navigate = useNavigate();
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -52,12 +54,12 @@ function Signup() {
     }
 
     try {
-      const response = await axios.post("http://127.0.0.1:8000/api/users/register/", formData, {
+      const response = await axios.post("http://127.0.0.1:8000/api/users/register/", formDataToSend, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-      setSuccessMessage("Registration successful!");
+      setSuccessMessage("Registration successful!, Now let's login to your account");
       setFormData({
         first_name: "",
         last_name: "",
@@ -68,9 +70,16 @@ function Signup() {
         profile_picture: null,
       });
       setTimeout(() => setSuccessMessage(""), 3000);
-
+      setTimeout(() => {
+        navigate("/Login");
+      }, 3000);
     } catch (error) {
-      console.error("Error during signup:", error.response ? error.response.data : error);
+      if (error.response && error.response.data) {
+        setErrorMessage("Error during signup: " + (error.response.data.detail || "Please try again"));
+      } else {
+        setErrorMessage("An unexpected error occurred. Please try again later.");
+      }
+      setTimeout(() => setErrorMessage(""), 3000);
     }
   };
 
@@ -176,6 +185,11 @@ function Signup() {
               }}
             />
           </div>
+          {errorMessage && (
+            <div className="alert alert-danger" role="alert">
+              {errorMessage}
+            </div>
+          )}
           <button type="submit" className="btn btn-primary w-100">
             Sign Up
           </button>
