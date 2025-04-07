@@ -16,7 +16,6 @@ import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 
 function App() {
   return (
-    <Router>
       <div className="d-flex flex-column vh-100">
         <Navbar />
         <div className="flex-grow-1">
@@ -40,7 +39,7 @@ function App() {
         </div>
         <Footer />
       </div>
-    </Router>
+
   );
 }
 
