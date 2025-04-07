@@ -1,0 +1,43 @@
+
+footer {
+    background-color: #343a40; 
+    color: white;
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+  
+  footer .container {
+    max-width: 1140px;
+  }
+  
+  footer h5 {
+    margin-bottom: 20px;
+    font-weight: bold;
+  }
+  
+  footer a {
+    text-decoration: none;
+    color: white;
+  }
+  
+  footer a:hover {
+    color: #ffac33; 
+  }
+  
+  footer .list-unstyled {
+    padding-left: 0;
+  }
+  
+  footer .list-unstyled li {
+    margin-bottom: 10px;
+  }
+  
+  footer .list-unstyled li a:hover {
+    text-decoration: underline;
+  }
+  
+  footer .pt-3 {
+    padding-top: 20px;
+    text-align: center;
+  }
+  

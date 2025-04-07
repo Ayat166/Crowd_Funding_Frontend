@@ -9,6 +9,11 @@ import ReportsPage from "./pages/ReportsPage";
 import ProjectsList from "./components/ProjectsList"; // Fixed import path
 import ProjectDetail from "./components/ProjectDetail"; // Fixed import path
 import ProjectForm from "./components/ProjectForm"; // Fixed import path
+import CategoryPage from "./pages/CategoryPage";
+import SearchResultsPage from "./pages/SearchResultsPage";
+import TermsPage from "./pages/TermsPage";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage"; 
+
 function App() {
   return (
     <Router>
@@ -17,6 +22,9 @@ function App() {
         <div className="flex-grow-1">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/category/:categoryId" element={<CategoryPage />} />
+            <Route path="/search" element={<SearchResultsPage />} />
+            
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/all-donations" element={<AllDonationsPage />} />
@@ -24,6 +32,10 @@ function App() {
             <Route path="/projects/list" exact element={<ProjectsList />} />
             <Route path="/projects/create" element={<ProjectForm />} />
             <Route path="/projects/:id" element={<ProjectDetail />} />
+            
+            <Route path="/terms" element={<TermsPage />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+
           </Routes>
         </div>
         <Footer />
