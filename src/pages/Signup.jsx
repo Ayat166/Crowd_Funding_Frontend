@@ -59,7 +59,7 @@ function Signup() {
           "Content-Type": "multipart/form-data",
         },
       });
-      setSuccessMessage("Registration successful!, Now let's login to your account");
+      setSuccessMessage("Registration successful!, we are going to send you an activation mail so you can loin to your email");
       setFormData({
         first_name: "",
         last_name: "",
