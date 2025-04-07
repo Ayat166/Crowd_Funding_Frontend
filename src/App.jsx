@@ -8,12 +8,6 @@ import CategoryPage from "./pages/CategoryPage";
 import SearchResultsPage from "./pages/SearchResultsPage";
 import TermsPage from "./pages/TermsPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage"; 
-//main branch to solve the merge conflict
-import AllDonationsPage from "./pages/AllDonationsPage";
-import ReportsPage from "./pages/ReportsPage";
-import ProjectsList from "./components/ProjectsList"; // Fixed import path
-import ProjectDetail from "./components/ProjectDetail"; // Fixed import path
-import ProjectForm from "./components/ProjectForm"; // Fixed import path
 
 function App() {
   return (
@@ -32,12 +26,6 @@ function App() {
             <Route path="/terms" element={<TermsPage />} />
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
 
-            {/* from main branch to solve the merge conflict */}
-            <Route path="/all-donations" element={<AllDonationsPage />} />
-            <Route path="/all-reports" element={<ReportsPage />} />
-            <Route path="/projects/list" exact element={<ProjectsList />} />
-            <Route path="/projects/create" element={<ProjectForm />} />
-            <Route path="/projects/:id" element={<ProjectDetail />} />
           </Routes>
         </div>
         <Footer />
