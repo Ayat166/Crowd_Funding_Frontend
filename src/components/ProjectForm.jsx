@@ -10,11 +10,12 @@ const ProjectForm = () => {
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [image, setImage] = useState(null);
+  const [tags, setTags] = useState(''); // New field for tags
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem('accessToken');
     if (!token) {
       alert('You must be logged in to create a project.');
       navigate('/login'); // Redirect to login page
@@ -23,7 +24,7 @@ const ProjectForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!title || !details || !totalTarget || !startTime || !endTime || !image) {
+    if (!title || !details || !totalTarget || !startTime || !endTime || !image || !tags) {
       setError('All fields are required.');
       return;
     }
@@ -35,14 +36,21 @@ const ProjectForm = () => {
     formData.append('start_time', startTime);
     formData.append('end_time', endTime);
     formData.append('image', image);
+    formData.append('tags', tags); // Add tags to the form data
 
     try {
+      const token = localStorage.getItem('accessToken'); // Retrieve the token
       const response = await api.post('/projects/', formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
       });
       console.log('Project created:', response.data);
+
+      // Alert success and navigate back to the profile page
+      alert('Project created successfully!');
+      navigate('/profile'); // Redirect to the profile page
+
       // Reset the form after successful submission
       setTitle('');
       setDetails('');
@@ -50,6 +58,7 @@ const ProjectForm = () => {
       setStartTime('');
       setEndTime('');
       setImage(null);
+      setTags('');
     } catch (error) {
       console.error('Error creating project:', error);
       setError('There was an issue creating your project. Please try again.');
@@ -124,6 +133,18 @@ const ProjectForm = () => {
             id="image"
             type="file"
             onChange={(e) => setImage(e.target.files[0])}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="tags">Tags</label>
+          <input
+            id="tags"
+            type="text"
+            placeholder="Enter tags separated by commas"
+            value={tags}
+            onChange={(e) => setTags(e.target.value)}
             required
           />
         </div>

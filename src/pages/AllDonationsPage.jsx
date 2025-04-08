@@ -12,11 +12,7 @@ const AllDonationsPage = () => {
   useEffect(() => {
     const fetchDonations = async () => {
       try {
-        const response = await api.get("/donations/", {
-          headers: {
-            Authorization: `Token ${token}`, // Use the token for authentication
-          },
-        });
+        const response = await api.get("/donations/");
         setDonations(response.data);
       } catch (error) {
         console.error("Error fetching donations:", error.response?.data || error.message);

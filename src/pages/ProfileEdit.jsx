@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { useParams, useNavigate } from "react-router-dom";
-
+import api from "../utils/axios"; // Axios instance
+import { useNavigate } from "react-router-dom";
 
 function ProfileEdit() {
-  const { id } = useParams();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     first_name: "",
@@ -22,7 +20,14 @@ function ProfileEdit() {
   const [msg, setMsg] = useState("");
 
   useEffect(() => {
-    axios.get(`http://127.0.0.1:8000/api/users/profile/${id}/`)
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      console.error("User ID not found. Please log in.");
+      setMsg("User ID not found. Please log in.");
+      return;
+    }
+
+    api.get(`/users/profile/${userId}/`)
       .then((res) => {
         const user = res.data.user;
         setFormData({
@@ -37,8 +42,9 @@ function ProfileEdit() {
       })
       .catch((err) => {
         console.error("Error fetching profile:", err);
+        setMsg("Error fetching profile data.");
       });
-  }, [id]);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -52,13 +58,20 @@ function ProfileEdit() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      console.error("User ID not found. Please log in.");
+      setMsg("User ID not found. Please log in.");
+      return;
+    }
+
     const updateData = new FormData();
     for (let key in formData) {
       updateData.append(key, formData[key]);
     }
 
     try {
-      await axios.put(`http://127.0.0.1:8000/api/users/update/${id}/`, updateData, {
+      await api.put(`/users/update/${userId}/`, updateData, {
         headers: {
           "Content-Type": "multipart/form-data"
         }
@@ -79,16 +92,23 @@ function ProfileEdit() {
           {msg && <div className="alert alert-warning">{msg}</div>}
         </div>
         <form onSubmit={handleSubmit} encType="multipart/form-data">
-          {[
-            { label: "First Name", name: "first_name" },
-            { label: "Last Name", name: "last_name" },
-            { label: "Country", name: "country" },
-            { label: "Birthdate", name: "birthdate", type: "date" },
-            { label: "Password", name: "password", type: "password" },
-            { label: "Confirm Password", name: "confirmPassword", type: "password" },
-            { label: "Mobile", name: "phone" },
-            { label: "Facebook Account", name: "facebook_profile" }
-          ].map(({ label, name, type = "text" }) => (
+          {[{
+            label: "First Name", name: "first_name"
+          }, {
+            label: "Last Name", name: "last_name"
+          }, {
+            label: "Country", name: "country"
+          }, {
+            label: "Birthdate", name: "birthdate", type: "date"
+          }, {
+            label: "Password", name: "password", type: "password"
+          }, {
+            label: "Confirm Password", name: "confirmPassword", type: "password"
+          }, {
+            label: "Mobile", name: "phone"
+          }, {
+            label: "Facebook Account", name: "facebook_profile"
+          }].map(({ label, name, type = "text" }) => (
             <div className="mb-3" key={name}>
               <label className="form-label">{label}</label>
               <input

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../utils/axios"; // Axios instance
 
 function AccountDelete() {
   const navigate = useNavigate();
@@ -13,10 +13,19 @@ function AccountDelete() {
     const confirmDelete = window.confirm("Are you sure you want to delete your account?");
     if (!confirmDelete) return;
 
-    try {console.log("sending: ", { password, user_id: 2 });
-      await axios.post("http://127.0.0.1:8000/api/users/delete-account/", { password,
-        user_id: 1, });
+    try {
+      // Retrieve the user ID from localStorage
+      const userId = localStorage.getItem("userId");
+      if (!userId) {
+        console.error("User ID not found. Please log in.");
+        setErrors("User ID not found. Please log in.");
+        return;
+      }
+
+      console.log("Sending:", { password, user_id: userId });
+      await api.post("/users/delete-account/", { password, user_id: userId });
       setMsg("Account deleted successfully.");
+      localStorage.clear(); // Clear localStorage after account deletion
       navigate("/login");
     } catch (error) {
       setErrors(error.response?.data?.detail || "Failed to delete account.");

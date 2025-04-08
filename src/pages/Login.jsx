@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import api from "../utils/axios"; // Axios instance
 import { useNavigate } from "react-router-dom";
 
 function Login() {
@@ -8,22 +8,29 @@ function Login() {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
+
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://127.0.0.1:8000/api/users/login/", {
+      const response = await api.post("/users/login/", {
         email,
         password,
       });
       console.log("Logging in:", { email, password });
-      const { access, refresh } = response.data;
+
+      // Extract tokens and user data from the response
+      const { access, refresh, user } = response.data;
+      console.log(user)
+      // Store tokens and user ID in localStorage
       localStorage.setItem("accessToken", access);
       localStorage.setItem("refreshToken", refresh);
-
+      localStorage.setItem("userId", user.id); // Store the logged-in user's ID
+      localStorage.setItem("firstName", user.first_name);
       console.log("Login successful:", response.data);
 
       // Redirect user to homepage
-      navigate("/Home");
+      navigate("/");
+      window.location.reload();
     } catch (error) {
       if (error.response && error.response.data) {
         setErrorMessage("Invalid credentials. Please try again.");

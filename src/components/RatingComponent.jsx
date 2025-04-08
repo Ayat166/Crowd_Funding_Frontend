@@ -1,16 +1,9 @@
 import React, { useState, useEffect } from "react";
 import api from "../utils/axios"; // Axios instance
 
-
-// <div className="project-page">
-//       <h1>Project Details</h1>
-//       {/* Other project details */}
-//       <RatingComponent projectId={1} />
-//     </div>
-
 const RatingComponent = ({ projectId }) => {
   const [ratings, setRatings] = useState([]);
-  const [averageRating, setAverageRating] = useState(0);
+  const [averageRating, setAverageRating] = useState(0); // Default to 0
   const [newRating, setNewRating] = useState(0);
   const [error, setError] = useState(null);
 
@@ -20,7 +13,7 @@ const RatingComponent = ({ projectId }) => {
       try {
         const response = await api.get(`/projects/${projectId}/ratings/`);
         setRatings(response.data.ratings); // Set the ratings list
-        setAverageRating(response.data.avg_rating); // Set the average rating
+        setAverageRating(response.data.avg_rating || 0); // Ensure avg_rating is a valid number
       } catch (err) {
         setError(err.response?.data || "Error fetching ratings");
       }
@@ -39,8 +32,22 @@ const RatingComponent = ({ projectId }) => {
       const response = await api.post(`/projects/${projectId}/ratings/`, {
         score: newRating,
       });
-      setRatings([...ratings, response.data]); // Add the new rating to the list
-      setAverageRating(response.data.project_avg_rating); // Update the average rating
+
+      // Update the ratings list
+      const updatedRatings = [...ratings, response.data];
+      setRatings(updatedRatings);
+
+      // Update the average rating
+      if (response.data.project_avg_rating !== undefined) {
+        // Use the avg_rating from the backend if available
+        setAverageRating(response.data.project_avg_rating);
+      } else {
+        // Recalculate the average rating locally if the backend doesn't return it
+        const totalScore = updatedRatings.reduce((sum, rating) => sum + rating.score, 0);
+        const newAvgRating = totalScore / updatedRatings.length;
+        setAverageRating(newAvgRating);
+      }
+
       setNewRating(0);
       setError(null); // Clear any previous errors
     } catch (err) {
@@ -71,7 +78,7 @@ const RatingComponent = ({ projectId }) => {
 
       {/* Average Rating */}
       <div className="mb-4">
-        <h4>Average Rating: {averageRating.toFixed(1)} / 5</h4>
+        <h4>Average Rating: {averageRating ? averageRating.toFixed(1) : "No ratings yet"} / 5</h4>
         <div style={{ fontSize: "1.5rem" }}>{renderStars(Math.round(averageRating))}</div>
       </div>
 
@@ -82,7 +89,7 @@ const RatingComponent = ({ projectId }) => {
             <div className="card-body">
               <div style={{ fontSize: "1.2rem" }}>{renderStars(rating.score)}</div>
               <p className="mb-1">
-                <strong>{rating.user}</strong>: {rating.comment || "No comment"}
+                <strong>{rating.user}</strong>
               </p>
             </div>
           </div>

@@ -1,21 +1,30 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { Link } from "react-router-dom";
+import api from "../utils/axios"; // Axios instance
 
 function ProfilePage() {
   const [profile, setProfile] = useState(null);
-  const userId = 1;
 
   useEffect(() => {
-    axios
-      .get(`http://127.0.0.1:8000/api/users/profile/${userId}`)
-      .then((response) => {
+    const fetchProfile = async () => {
+      try {
+        // Retrieve the user ID from localStorage
+        const userId = localStorage.getItem("userId");
+        if (!userId) {
+          console.error("User ID not found. Please log in.");
+          return;
+        }
+
+        // Fetch the logged-in user's profile
+        const response = await api.get(`/users/profile/${userId}`);
         console.log("PROFILE:", response.data);
         setProfile(response.data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("There was an error fetching the profile data!", error);
-      });
+      }
+    };
+
+    fetchProfile();
   }, []);
 
   if (!profile || !profile.user) return <div>Loading...</div>;
@@ -62,7 +71,9 @@ function ProfilePage() {
               </Link>
             </li>
             <li className="py-1">
-              <button className="btn btn-link">Create Project</button>
+              <Link to="/projects/create" className="btn btn-link">
+                Create Project
+              </Link>
             </li>
             <li className="py-1">
               <Link to="/profile/delete" className="btn btn-link">

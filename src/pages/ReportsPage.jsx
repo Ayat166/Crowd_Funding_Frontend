@@ -10,11 +10,7 @@ const ReportsPage = () => {
     // Fetch all reports
     const fetchReports = async () => {
       try {
-        const response = await api.get("/comments/reports/", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`, // Add token for authentication
-          },
-        });
+        const response = await api.get("/comments/reports/");
         setReports(response.data);
         setLoading(false);
       } catch (err) {
