@@ -14,12 +14,11 @@ import CategoryPage from "./pages/CategoryPage";
 import SearchResultsPage from "./pages/SearchResultsPage";
 import TermsPage from "./pages/TermsPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage"; 
-import { useState } from 'react';
 import ProfileEdit from "./pages/ProfileEdit";
 import AccountDelete from "./pages/AccountDelete";
 
+
 function App() {
-  const [userId, setUserId] = useState(1);
   return (
       <div className="d-flex flex-column vh-100">
         <Navbar />
@@ -40,8 +39,8 @@ function App() {
             <Route path="/terms" element={<TermsPage />} />
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
 
-            <Route path="/profile" element={<ProfilePage userId={1} />} />
-            <Route path="/profile/edit/:id" element={<ProfileEdit />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/profile/edit" element={<ProfileEdit />} />
             <Route path="/profile/delete" element={<AccountDelete />} /> 
           </Routes>
         </div>

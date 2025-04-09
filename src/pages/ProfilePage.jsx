@@ -38,7 +38,7 @@ function ProfilePage() {
       <div className="row">
         {/* Left Panel */}
         <div className="col-md-3 profile-nav shadow-lg h-100 p-0">
-          <div className="user-heading round bg-gradient-primary text-white text-center py-4">
+          <div className="user-heading round bg-gradient-primary text-center py-4">
             <img
               src={
                 user.profile_picture
@@ -47,26 +47,20 @@ function ProfilePage() {
               }
               alt="profile"
               className="card-img-top border border-2 rounded-circle my-3"
-              style={{ width: 150, height: 150 }}
+              style={{ width: 150, height: 150, objectFit: "cover" }}
             />
             <h4>
               {user.first_name} {user.last_name}
             </h4>
             <p>{user.email}</p>
-            <a href={user.facebook_profile || "#"} className="text-white">
-              <i className="fa-brands fa-facebook-f mx-1"></i>
-            </a>
-            <a className="text-white">
-              <i className="fa-brands fa-twitter mx-1"></i>
-            </a>
-            <a className="text-white">
-              <i className="fa-brands fa-instagram mx-1"></i>
+            <a href={user.facebook_profile || "#"}>
+              <i className="fa-brands fa-facebook mx-1"></i>
             </a>
           </div>
 
           <ul className="nav flex-column bg-white">
             <li className="py-1">
-              <Link to={`/profile/edit/${user.id}`} className="btn btn-link">
+              <Link to={`/profile/edit`} className="btn btn-link">
                 Edit Profile
               </Link>
             </li>
@@ -174,19 +168,21 @@ function ProfilePage() {
             {projects.map((project, idx) => (
               <div key={idx} className="col-md-4">
                 <div style={{ height: "150px" }}>
-                  <img
-                    src={
-                      project.images && project.images.length > 0
-                        ? `http://127.0.0.1:8000${project.images[0].image}`
-                        : "/default-profile.png"
-                    }
-                    alt="project"
-                    className="card-img-top border border-2 rounded-circle my-3"
-                    style={{ width: 150, height: 150 }}
-                  />
+                    <img
+                      src={
+                        project.images && project.images.length > 0
+                          ? `http://127.0.0.1:8000${project.images[0].image}`
+                          : "/default-profile.png"
+                      }
+                      alt="project"
+                      className="card-img-top border border-2 rounded-circle my-3"
+                      style={{ width: 150, height: 150 }}
+                    />
                 </div>
                 <div className="d-flex justify-content-between bg-white px-3 pt-3">
-                  <h5>{project.title}</h5>
+                  <Link to={`/projects/${project.id}`} className="text-decoration-none">
+                    <h5>{project.title}</h5>
+                  </Link>
                   <p>{project.total_target} L.E.</p>
                 </div>
                 <p className="bg-white px-3 pb-3">
