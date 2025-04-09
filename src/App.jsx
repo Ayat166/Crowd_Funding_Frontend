@@ -17,6 +17,8 @@ import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import { useState } from 'react';
 import ProfileEdit from "./pages/ProfileEdit";
 import AccountDelete from "./pages/AccountDelete";
+import ResetPasswordRequest from "./pages/ResetPasswordRequest";
+import ResetPasswordConfirm from "./pages/ResetPasswordConfirm";
 
 function App() {
   const [userId, setUserId] = useState(1);
@@ -31,6 +33,10 @@ function App() {
             
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+
+            <Route path="/reset-password" element={<ResetPasswordRequest />} />
+            <Route path="/reset-password/:uidb64/:token" element={<ResetPasswordConfirm />} />
+
             <Route path="/all-donations" element={<AllDonationsPage />} />
             <Route path="/all-reports" element={<ReportsPage />} />
             <Route path="/projects/list" exact element={<ProjectsList />} />
