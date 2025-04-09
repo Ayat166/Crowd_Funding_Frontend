@@ -23,12 +23,18 @@ function AccountDelete() {
       }
 
       console.log("Sending:", { password, user_id: userId });
-      await api.post("/users/delete-account/", { password, user_id: userId });
+      await api.delete(`/users/${userId}/`, { data: { password } });
       setMsg("Account deleted successfully.");
       localStorage.clear(); // Clear localStorage after account deletion
       navigate("/login");
-    } catch (error) {
-      setErrors(error.response?.data?.detail || "Failed to delete account.");
+    } catch (err) {
+      if (err.response?.data?.errors?.password) {
+        setMsg(err.response.data.errors.password[0]);
+      } else if (err.response?.data?.error) {
+        setMsg(err.response.data.error);
+      } else {
+        setMsg("Failed to delete account.");
+      }
     }
   };
 
