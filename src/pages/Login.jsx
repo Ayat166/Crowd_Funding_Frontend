@@ -27,6 +27,10 @@ function Login() {
       localStorage.setItem("userId", user.id); // Store the logged-in user's ID
       localStorage.setItem("firstName", user.first_name);
       console.log("Login successful:", response.data);
+      
+      //created by amina 
+      //localStorage.setItem("is_superuser","false"); // Store the admin flag
+      localStorage.setItem("is_superuser", user.is_superuser ? "true" : "false"); // Store the admin flag
 
       // Redirect user to homepage
       navigate("/");

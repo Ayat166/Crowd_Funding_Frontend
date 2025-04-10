@@ -14,6 +14,9 @@ const Home = () => {
     const topRatedSliderRef = useRef(null);
     const featuredSliderRef = useRef(null);
 
+    // Check if user is an admin
+    const is_superuser = localStorage.getItem("is_superuser") === "true"; 
+
     useEffect(() => {
         const getProjects = async () => {
             try {
@@ -78,6 +81,8 @@ const Home = () => {
             ) : (
                 <p className="text-gray-500">No {title}</p>
             )}
+
+
         </div>
     );
 
@@ -86,6 +91,18 @@ const Home = () => {
             {renderProjectsSlider("Top Rated Projects", projects.topRated, topRatedSliderRef)}
             {renderProjectsSlider("Latest Projects", projects.latest, latestSliderRef)}
             {renderProjectsSlider("Featured Projects", projects.featured, featuredSliderRef)}
+
+            {/* Show Admin Button if user is admin */}
+            {is_superuser && (
+                <div className="text-center mt-8">
+                    <Link
+                        to="/admin/feature-projects"
+                        className="bg-blue-600 text-black px-4 py-2 rounded hover:bg-blue-700"
+                    >
+                        Manage Featured Projects
+                    </Link>
+                </div>
+            )}
         </div>
     );
 };
