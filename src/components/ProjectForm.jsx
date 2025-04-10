@@ -9,8 +9,8 @@ const ProjectForm = () => {
   const [totalTarget, setTotalTarget] = useState('');
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
-  const [image, setImage] = useState(null);
-  const [tags, setTags] = useState(''); // New field for tags
+  const [images, setImages] = useState([]);
+  const [imageNames, setImageNames] = useState([]);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
@@ -22,9 +22,15 @@ const ProjectForm = () => {
     }
   }, [navigate]);
 
+  const handleImageChange = (e) => {
+    const selectedFiles = Array.from(e.target.files);
+    setImages([...images, ...selectedFiles]);
+    setImageNames([...imageNames, ...selectedFiles.map((file) => file.name)]);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!title || !details || !totalTarget || !startTime || !endTime || !image || !tags) {
+    if (!title || !details || !totalTarget || !startTime || !endTime || images.length === 0) {
       setError('All fields are required.');
       return;
     }
@@ -35,8 +41,7 @@ const ProjectForm = () => {
     formData.append('total_target', totalTarget);
     formData.append('start_time', startTime);
     formData.append('end_time', endTime);
-    formData.append('image', image);
-    formData.append('tags', tags); // Add tags to the form data
+    images.forEach((image) => formData.append('images', image));
 
     try {
       const token = localStorage.getItem('accessToken'); // Retrieve the token
@@ -57,8 +62,8 @@ const ProjectForm = () => {
       setTotalTarget('');
       setStartTime('');
       setEndTime('');
-      setImage(null);
-      setTags('');
+      setImages([]);
+      setImageNames([]);
     } catch (error) {
       console.error('Error creating project:', error);
       setError('There was an issue creating your project. Please try again.');
@@ -128,25 +133,19 @@ const ProjectForm = () => {
         </div>
 
         <div className="form-group">
-          <label htmlFor="image">Project Image</label>
+          <label htmlFor="images">Project Images</label>
           <input
-            id="image"
+            id="images"
             type="file"
-            onChange={(e) => setImage(e.target.files[0])}
+            multiple
+            onChange={handleImageChange}
             required
           />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="tags">Tags</label>
-          <input
-            id="tags"
-            type="text"
-            placeholder="Enter tags separated by commas"
-            value={tags}
-            onChange={(e) => setTags(e.target.value)}
-            required
-          />
+          <div>
+            {imageNames.map((name, index) => (
+              <p key={index}>{name}</p>
+            ))}
+          </div>
         </div>
 
         <button type="submit" className="submit-btn">Create Project</button>
