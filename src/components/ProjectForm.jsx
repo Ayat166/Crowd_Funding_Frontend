@@ -11,6 +11,8 @@ const ProjectForm = () => {
   const [endTime, setEndTime] = useState('');
   const [images, setImages] = useState([]);
   const [imageNames, setImageNames] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
@@ -22,6 +24,18 @@ const ProjectForm = () => {
     }
   }, [navigate]);
 
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await api.get('/projects/categories/');
+        setCategories(response.data);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+    fetchCategories();
+  }, []);
+
   const handleImageChange = (e) => {
     const selectedFiles = Array.from(e.target.files);
     setImages([...images, ...selectedFiles]);
@@ -30,7 +44,7 @@ const ProjectForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!title || !details || !totalTarget || !startTime || !endTime || images.length === 0) {
+    if (!title || !details || !totalTarget || !startTime || !endTime || !selectedCategory || images.length === 0) {
       setError('All fields are required.');
       return;
     }
@@ -41,6 +55,7 @@ const ProjectForm = () => {
     formData.append('total_target', totalTarget);
     formData.append('start_time', startTime);
     formData.append('end_time', endTime);
+    formData.append('category', selectedCategory); // Add category ID
     images.forEach((image) => formData.append('images', image));
 
     try {
@@ -64,6 +79,7 @@ const ProjectForm = () => {
       setEndTime('');
       setImages([]);
       setImageNames([]);
+      setSelectedCategory('');
     } catch (error) {
       console.error('Error creating project:', error);
       setError('There was an issue creating your project. Please try again.');
@@ -130,6 +146,23 @@ const ProjectForm = () => {
             onChange={(e) => setEndTime(e.target.value)}
             required
           />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="category">Category</label>
+          <select
+            id="category"
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            required
+          >
+            <option value="">Select a category</option>
+            {categories.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="form-group">
