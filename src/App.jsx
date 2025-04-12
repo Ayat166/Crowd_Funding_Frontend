@@ -12,6 +12,8 @@ import ProjectDetail from "./components/ProjectDetail"; // Fixed import path
 import ProjectForm from "./components/ProjectForm"; // Fixed import path
 import CategoryPage from "./pages/CategoryPage";
 import SearchResultsPage from "./pages/SearchResultsPage";
+import FeatureProjectsAdmin from "./pages/FeatureProjectsAdmin"; // Fixed import path
+import { fetchAllProjects } from "./api"; // Fixed import path
 import TermsPage from "./pages/TermsPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage"; 
 import ProfileEdit from "./pages/ProfileEdit";
@@ -29,6 +31,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/category/:categoryId" element={<CategoryPage />} />
             <Route path="/search" element={<SearchResultsPage />} />
+            <Route path="/admin/feature-projects" element={<FeatureProjectsAdmin />} />
             
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
