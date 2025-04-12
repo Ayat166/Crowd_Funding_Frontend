@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../utils/axios"; // Axios instance
-import { useNavigate } from "react-router-dom";
+import { useNavigate ,useLocation } from 'react-router-dom';
+
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -27,8 +28,6 @@ function Login() {
       localStorage.setItem("userId", user.id); // Store the logged-in user's ID
       localStorage.setItem("firstName", user.first_name);
       console.log("Login successful:", response.data);
-
-      // Redirect user to homepage
       navigate("/");
       window.location.reload();
     } catch (error) {
@@ -71,6 +70,8 @@ function Login() {
               {errorMessage}
             </div>
           )}
+          <Link to="/reset-password">Forgot your password?</Link>
+
           <button type="submit" className="btn btn-primary w-100">
             Login
           </button>

@@ -2,12 +2,16 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../utils/axios"; // Axios instance
 import CategoryDropdown from "./CategoryDropdown";
+import { refreshAccessToken } from '../utils/auth';
+import axios from 'axios'
 
 function Navbar() {
   const [searchTerm, setSearchTerm] = useState("");
   const [userName, setUserName] = useState(localStorage.getItem("firstName")); // Initialize with the first name from localStorage
   const [loggedIn, setLoggedIn] = useState(!!localStorage.getItem("accessToken")); // Track login state
   const navigate = useNavigate();
+  const [showConfirm, setShowConfirm] = useState(false);
+
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -35,6 +39,51 @@ function Navbar() {
     e.preventDefault(); // Prevent the default form submission behavior
     if (searchTerm.trim()) {
       navigate(`/search?query=${searchTerm}`); // Navigate to the search results page with the query
+    }
+  };
+
+  const handleLogout = async () => {
+    let token = localStorage.getItem('accessToken');
+
+    // Try refreshing token if it’s expired
+    if (!token || isTokenExpired(token)) {
+      token = await refreshAccessToken();
+    }
+
+    if (!token) {
+      alert("You have been logged out due to session expiration.");
+      localStorage.clear();
+      setUserName(null);     // Reset the state
+      setLoggedIn(false);
+      navigate('/login');
+      return;
+    }
+
+    try {
+      await axios.post(
+        'http://127.0.0.1:8000/api/users/logout/',
+        { refresh_token: localStorage.getItem('refreshToken') },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      localStorage.clear();
+      setUserName(null);     // Reset the state
+      setLoggedIn(false);
+      navigate('/');
+      console.log("You Have succesfully loged out")
+    } catch (err) {
+      console.error("Logout failed:", err.response?.data || err.message);
+      alert("Logout failed, please try again.");
+    }
+  };
+
+  // Helper to check if token is expired
+  function isTokenExpired(token) {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.exp * 1000 < Date.now();
+    } catch {
+      return true;
     }
   };
 
@@ -91,9 +140,18 @@ function Navbar() {
           </form>
           {/* User Info or Login Button */}
           {userName ? (
-            <Link to="/profile" className="btn btn-secondary me-3">
-              <p className="mb-0 me-3">Welcome, {userName}!</p>
-            </Link>
+            <>
+              <Link to="/profile" className="btn btn-secondary me-3">
+                <p className="mb-0 me-3">Welcome, {userName}!</p>
+              </Link>
+              <button
+                type="button"
+                className="btn btn-danger"
+                onClick={() => setShowConfirm(true)}
+              >
+                Logout
+              </button>
+            </>
           ) : (
             <Link to="/login" className="btn btn-primary">
               Login
@@ -101,7 +159,34 @@ function Navbar() {
           )}
         </div>
       </div>
-    </nav>
+      {showConfirm && (
+        <div className="modal show fade d-block" tabIndex="-1" role="dialog" style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
+          <div className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Confirm Logout</h5>
+                <button type="button" className="btn-close" aria-label="Close" onClick={() => setShowConfirm(false)}></button>
+              </div>
+              <div className="modal-body">
+                <p>Are you sure you want to log out?</p>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" onClick={() => setShowConfirm(false)}>
+                  Cancel
+                </button>
+                <button type="button" className="btn btn-danger" onClick={() => {
+                  setShowConfirm(false); // hide modal
+                  handleLogout(); // call actual logout function
+                }}>
+                  Logout
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+    </nav >
   );
 }
 
