@@ -9,8 +9,10 @@ const ProjectForm = () => {
   const [totalTarget, setTotalTarget] = useState('');
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
-  const [image, setImage] = useState(null);
-  const [tags, setTags] = useState(''); // New field for tags
+  const [images, setImages] = useState([]);
+  const [imageNames, setImageNames] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
@@ -22,9 +24,27 @@ const ProjectForm = () => {
     }
   }, [navigate]);
 
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await api.get('/projects/categories/');
+        setCategories(response.data);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  const handleImageChange = (e) => {
+    const selectedFiles = Array.from(e.target.files);
+    setImages([...images, ...selectedFiles]);
+    setImageNames([...imageNames, ...selectedFiles.map((file) => file.name)]);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!title || !details || !totalTarget || !startTime || !endTime || !image || !tags) {
+    if (!title || !details || !totalTarget || !startTime || !endTime || !selectedCategory || images.length === 0) {
       setError('All fields are required.');
       return;
     }
@@ -35,8 +55,8 @@ const ProjectForm = () => {
     formData.append('total_target', totalTarget);
     formData.append('start_time', startTime);
     formData.append('end_time', endTime);
-    formData.append('image', image);
-    formData.append('tags', tags); // Add tags to the form data
+    formData.append('category', selectedCategory); // Add category ID
+    images.forEach((image) => formData.append('images', image));
 
     try {
       const token = localStorage.getItem('accessToken'); // Retrieve the token
@@ -57,8 +77,9 @@ const ProjectForm = () => {
       setTotalTarget('');
       setStartTime('');
       setEndTime('');
-      setImage(null);
-      setTags('');
+      setImages([]);
+      setImageNames([]);
+      setSelectedCategory('');
     } catch (error) {
       console.error('Error creating project:', error);
       setError('There was an issue creating your project. Please try again.');
@@ -128,25 +149,36 @@ const ProjectForm = () => {
         </div>
 
         <div className="form-group">
-          <label htmlFor="image">Project Image</label>
-          <input
-            id="image"
-            type="file"
-            onChange={(e) => setImage(e.target.files[0])}
+          <label htmlFor="category">Category</label>
+          <select
+            id="category"
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
             required
-          />
+          >
+            <option value="">Select a category</option>
+            {categories.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="form-group">
-          <label htmlFor="tags">Tags</label>
+          <label htmlFor="images">Project Images</label>
           <input
-            id="tags"
-            type="text"
-            placeholder="Enter tags separated by commas"
-            value={tags}
-            onChange={(e) => setTags(e.target.value)}
+            id="images"
+            type="file"
+            multiple
+            onChange={handleImageChange}
             required
           />
+          <div>
+            {imageNames.map((name, index) => (
+              <p key={index}>{name}</p>
+            ))}
+          </div>
         </div>
 
         <button type="submit" className="submit-btn">Create Project</button>
