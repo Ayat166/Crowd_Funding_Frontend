@@ -11,10 +11,11 @@ function Navbar() {
   const [loggedIn, setLoggedIn] = useState(!!localStorage.getItem("accessToken")); // Track login state
   const navigate = useNavigate();
   const [showConfirm, setShowConfirm] = useState(false);
-
+  const [is_superuser, set_superuser] = useState(false);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
+  
       const token = localStorage.getItem("accessToken");
       const userId = localStorage.getItem("userId"); // Retrieve user ID from localStorage
       if (token && userId) {
@@ -24,6 +25,9 @@ function Navbar() {
           const user = response.data.user;
           setUserName(user.first_name); // Use the first name from the response
           localStorage.setItem("firstName", user.first_name); // Store the first name in localStorage
+          set_superuser(user.is_superuser===true); // Check if the user is a superuser
+       
+          
         } catch (error) {
           console.error("Error fetching user profile:", error);
         }
@@ -31,6 +35,7 @@ function Navbar() {
         setUserName(null); // Clear the username if no token or user ID exists
       }
     };
+
 
     fetchUserProfile();
   }, [loggedIn]); // Re-run the effect when `loggedIn` changes
@@ -123,6 +128,21 @@ function Navbar() {
               </Link>
             </li>
             <CategoryDropdown />
+            {loggedIn && is_superuser &&  (
+                  <>
+                    <li className="nav-item">
+                      <Link to="/all-donations" className="nav-link">
+                        All Donations
+                      </Link>
+                    </li>
+                    <li className="nav-item">
+                      <Link to="/all-reports" className="nav-link">
+                        All Reports
+                      </Link>
+                    </li>
+                  </>
+                )}
+
           </ul>
           {/* Search form */}
           <form className="d-flex me-3" role="search" onSubmit={handleSearch}>

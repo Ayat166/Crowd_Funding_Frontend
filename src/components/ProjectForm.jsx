@@ -15,7 +15,7 @@ const ProjectForm = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
-
+  const [tags, setTags] = useState('');
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
     if (!token) {
@@ -44,7 +44,7 @@ const ProjectForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!title || !details || !totalTarget || !startTime || !endTime || !selectedCategory || images.length === 0) {
+    if (!title || !details || !totalTarget || !startTime || !endTime || !selectedCategory || images.length === 0 || !tags) {
       setError('All fields are required.');
       return;
     }
@@ -57,6 +57,7 @@ const ProjectForm = () => {
     formData.append('end_time', endTime);
     formData.append('category', selectedCategory); // Add category ID
     images.forEach((image) => formData.append('images', image));
+    formData.append('tags', tags);
 
     try {
       const token = localStorage.getItem('accessToken'); // Retrieve the token
@@ -80,6 +81,7 @@ const ProjectForm = () => {
       setImages([]);
       setImageNames([]);
       setSelectedCategory('');
+      setTags('');
     } catch (error) {
       console.error('Error creating project:', error);
       setError('There was an issue creating your project. Please try again.');
@@ -164,6 +166,17 @@ const ProjectForm = () => {
             ))}
           </select>
         </div>
+        <div className="form-group">
+           <label htmlFor="tags">Tags</label>
+           <input
+             id="tags"
+             type="text"
+             placeholder="Enter tags separated by commas"
+             value={tags}
+             onChange={(e) => setTags(e.target.value)}
+             required
+           />
+         </div>
 
         <div className="form-group">
           <label htmlFor="images">Project Images</label>

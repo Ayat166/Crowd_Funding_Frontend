@@ -4,6 +4,7 @@ import api from "../utils/axios"; // Axios instance
 import DonationComponent from "./DonationComponent"; // Import the DonationComponent
 import CommentSection from "./CommentSection"; // Import the CommentSection component
 import RatingComponent from "./RatingComponent"; // Import the RatingComponent
+import ImagesSlider from './ImagesSlider';
 
 const ProjectDetail = () => {
   const { id } = useParams(); // Get the project ID from the URL
@@ -43,11 +44,9 @@ const ProjectDetail = () => {
       {/* Main Content (3/4 of the page) */}
       <div style={{ flex: "3", backgroundColor: "#f9f9f9", padding: "20px", borderRadius: "8px", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)" }}>
         <h1 style={{ fontSize: "2rem", marginBottom: "20px" }}>{project.title}</h1>
-        <img
-          src={`http://127.0.0.1:8000${project.image}`}
-          alt={project.title}
-          style={{ width: "100%", borderRadius: "8px", marginBottom: "20px" }}
-        />
+
+        <ImagesSlider images={project.images} carouselId={`carousel-${project.id}`} />
+
         <p style={{ fontSize: "1.2rem", lineHeight: "1.6", marginBottom: "20px" }}>{project.details}</p>
         <p style={{ fontSize: "1rem", marginBottom: "10px" }}>
           <strong>Target:</strong> ${project.total_target}

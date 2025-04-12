@@ -9,7 +9,7 @@ import ProjectCard from "../components/ProjectCard";
 const Home = () => {
     const [projects, setProjects] = useState({ latest: [], topRated: [], featured: [] });
     const [loading, setLoading] = useState(true);
-
+    const [loggedIn, setLoggedIn] = useState(!!localStorage.getItem("accessToken"));
     const latestSliderRef = useRef(null);
     const topRatedSliderRef = useRef(null);
     const featuredSliderRef = useRef(null);
@@ -93,7 +93,7 @@ const Home = () => {
             {renderProjectsSlider("Featured Projects", projects.featured, featuredSliderRef)}
 
             {/* Show Admin Button if user is admin */}
-            {is_superuser && (
+            {loggedIn && is_superuser && (
                 <div className="text-center mt-8">
                     <Link
                         to="/admin/feature-projects"
