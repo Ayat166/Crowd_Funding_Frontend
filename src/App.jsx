@@ -20,12 +20,16 @@ import ProfileEdit from "./pages/ProfileEdit";
 import AccountDelete from "./pages/AccountDelete";
 import ResetPasswordRequest from "./pages/ResetPasswordRequest";
 import ResetPasswordConfirm from "./pages/ResetPasswordConfirm";
+import { useLocation } from "react-router-dom";
 
 
 function App() {
+  const location = useLocation();
+  const hideNavbarPaths = ["/login", "/signup"];
+  const hideFooterPaths = ["/login", "/signup"];
   return (
       <div className="d-flex flex-column vh-100">
-        <Navbar />
+        {!hideNavbarPaths.includes(location.pathname) && <Navbar />}
         <div className="flex-grow-1">
           <Routes>
             <Route path="/" element={<Home />} />
@@ -53,7 +57,7 @@ function App() {
             <Route path="/profile/delete" element={<AccountDelete />} /> 
           </Routes>
         </div>
-        <Footer />
+        {!hideFooterPaths.includes(location.pathname) && <Footer />}
       </div>
 
   );

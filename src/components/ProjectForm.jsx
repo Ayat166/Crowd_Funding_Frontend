@@ -89,7 +89,8 @@ const ProjectForm = () => {
   };
 
   return (
-    <div className="project-form-container">
+
+    <div className="project-form-container mt-4 mb-4 ">
       <h2>Create New Project</h2>
       {error && <div className="error-message">{error}</div>}
       <form onSubmit={handleSubmit} className="project-form">
@@ -153,6 +154,7 @@ const ProjectForm = () => {
         <div className="form-group">
           <label htmlFor="category">Category</label>
           <select
+            className="mx-4"
             id="category"
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
@@ -197,6 +199,7 @@ const ProjectForm = () => {
         <button type="submit" className="submit-btn">Create Project</button>
       </form>
     </div>
+
   );
 };
 

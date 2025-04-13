@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { updateProjectFeatureStatus, fetchAllProjects } from "../api";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 
 const FeatureProjectsAdmin = () => {
     const [projects, setProjects] = useState([]);
@@ -48,39 +48,63 @@ const FeatureProjectsAdmin = () => {
     if (loading) return <p className="text-center mt-10">Loading projects...</p>;
 
     return (
-        <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-semibold text-center mb-6">Manage Featured Projects</h1>
-            <div className="space-y-4">
-                {projects.map((project) => {
-                    const isChecked =
-                        updatedProjects[project.id] !== undefined
-                            ? Boolean(updatedProjects[project.id])
-                            : Boolean(project.is_featured);
-                    return (
-                        <div
-                            key={project.id}
-                            className="flex items-center justify-between border-b pb-2 space-x-4"
-                        >
-                            <span className="flex-1">{project.title}</span>
-                            <input
-                                type="checkbox"
-                                checked={isChecked}
-                                onChange={() => toggleFeature(project.id)}
-                                className="w-5 h-5 bg-success"
-                            />
-                        </div>
-                    );
-                })}
-            </div>
-            <div className="mt-6 text-center">
-                <button
-                    onClick={handleSave}
-                    className="bg-success text-white px-6 py-2 rounded"
-                >
-                    Save
-                </button>
-            </div>
+        <div className="container mx-auto p-6 max-w-4xl">
+        <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">
+          Manage Featured Projects
+        </h1>
+      
+        <div className="overflow-x-auto bg-white shadow rounded-lg w-50 flex my-5 mx-auto"> 
+          <table className="min-w-full table-auto">
+            <thead className="bg-gray-100 text-gray-700 text-left">
+              <tr>
+                <th className="px-4 py-3">#</th>
+                <th className="px-4 py-3">Project Title</th>
+                <th className="px-4 py-3 text-center">Featured</th>
+              </tr>
+            </thead>
+            <tbody>
+              {projects.map((project, index) => {
+                const isChecked =
+                  updatedProjects[project.id] !== undefined
+                    ? Boolean(updatedProjects[project.id])
+                    : Boolean(project.is_featured);
+                return (
+                  <tr
+                    key={project.id}
+                    className="border-t hover:bg-gray-50 transition-colors"
+                  >
+                    <td className="px-4 py-3 font-medium">{index + 1}</td>
+                    <td className="px-4 py-3">
+                        <Link to={`/projects/${project.id}`} className="text-decoration-none text-primary">
+                            {project.title}
+                        </Link>
+                        </td>
+                    <td className="px-4 py-3 text-center">
+                      <input
+                        type="checkbox"
+                        checked={isChecked}
+                        onChange={() => toggleFeature(project.id)}
+                        className="w-5 h-5 accent-green-600"
+                      />
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
+      
+        <div className="my-4 text-center">
+          <button
+            onClick={handleSave}
+            className="btn btn-primary"
+          >
+            Save Changes
+          </button>
+        </div>
+      </div>
+      
+
     );
 };
 

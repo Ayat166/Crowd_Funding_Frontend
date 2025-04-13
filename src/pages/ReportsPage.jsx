@@ -57,7 +57,7 @@ const ReportsPage = () => {
       <h1 className="mb-4 text-center">All Reports</h1>
 
       {/* Project Reports */}
-      <h2 className="mt-5">Reports of Projects</h2>
+      <h2 className="mt-5 text-start">Reports of Projects</h2>
       {projectReports.length > 0 ? (
         <div className="table-responsive">
           <table className="table table-striped table-hover table-bordered">
@@ -90,7 +90,7 @@ const ReportsPage = () => {
       )}
 
       {/* Comment Reports */}
-      <h2 className="mt-5">Reports of Comments</h2>
+      <h2 className="mt-5 text-start">Reports of Comments</h2>
       {commentReports.length > 0 ? (
         <div className="table-responsive">
           <table className="table table-striped table-hover table-bordered">
@@ -123,7 +123,7 @@ const ReportsPage = () => {
       )}
 
       {/* Comment Reply Reports */}
-      <h2 className="mt-5">Reports of Comment Replies</h2>
+      <h2 className="mt-5 text-start">Reports of Comment Replies</h2>
       {commentReplyReports.length > 0 ? (
         <div className="table-responsive">
           <table className="table table-striped table-hover table-bordered">

@@ -131,6 +131,11 @@ function Navbar() {
             {loggedIn && is_superuser &&  (
                   <>
                     <li className="nav-item">
+                      <Link to="/admin/feature-projects" className="nav-link">
+                        Featured Projects
+                      </Link>
+                    </li>
+                    <li className="nav-item">
                       <Link to="/all-donations" className="nav-link">
                         All Donations
                       </Link>

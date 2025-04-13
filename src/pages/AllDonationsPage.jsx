@@ -25,28 +25,40 @@ const AllDonationsPage = () => {
 
   return (
     <div className="container my-5">
-      <h1 className="mb-4">All Donations</h1>
-      {error && <div className="alert alert-danger">{error}</div>}
+  <h1 className="mb-4">All Donations</h1>
+  {error && <div className="alert alert-danger">{error}</div>}
 
-      <div className="mt-5">
-        <h2>Donations</h2>
-        {donations.length > 0 ? (
-          <ul className="list-group">
+  <div className="mt-5">
+    <h2 className="mb-3">Donations</h2>
+    {donations.length > 0 ? (
+      <div className="table-responsive">
+        <table className="table table-bordered table-striped">
+          <thead className="table-dark">
+            <tr>
+              <th>User</th>
+              <th>Project</th>
+              <th>Amount</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
             {donations.map((donation) => (
-              <li key={donation.id} className="list-group-item">
-                <strong>User:</strong> {donation.user} -{" "}
-                <strong>Project:</strong> {donation.project} -{" "}
-                <strong>Amount:</strong> ${donation.amount} -{" "}
-                <strong>Date:</strong>{" "}
-                {new Date(donation.date_donated).toLocaleString()}
-              </li>
+              <tr key={donation.id}>
+                <td>{donation.user}</td>
+                <td>{donation.project}</td>
+                <td>${donation.amount}</td>
+                <td>{new Date(donation.date_donated).toLocaleString()}</td>
+              </tr>
             ))}
-          </ul>
-        ) : (
-          <p>No donations available.</p>
-        )}
+          </tbody>
+        </table>
       </div>
-    </div>
+    ) : (
+      <p>No donations available.</p>
+    )}
+  </div>
+</div>
+
   );
 };
 

@@ -14,6 +14,8 @@ const CommentSection = ({ projectId }) => {
   const [showAllComments, setShowAllComments] = useState(false); // State to toggle comments display
   const [expandedReplies, setExpandedReplies] = useState({}); // State to toggle replies for each comment
 
+  const [reportType, setReportType] = useState("comment");
+
   useEffect(() => {
     const fetchComments = async () => {
       try {
@@ -55,25 +57,51 @@ const CommentSection = ({ projectId }) => {
       console.error("Error adding reply:", error);
     }
   };
-
-  const handleReportComment = async () => {
+  const handleReport = async () => {
     if (!reportReason.trim()) {
-      alert("Please provide a reason for reporting the comment.");
+      alert("Please provide a reason.");
       return;
     }
+  
+    const payload = {
+      report_type: reportType,
+      reason: reportReason,
+    };
+  
+
+    if (reportType === "project") payload.project = reportingCommentId;
+    else if (reportType === "comment") payload.comment = reportingCommentId;
+    else if (reportType === "comment_reply") payload.comment_reply = reportingCommentId;
+  
     try {
-      await api.post(`/comments/reports/`, {
-        report_type: "comment",
-        comment: reportingCommentId,
-        reason: reportReason,
-      });
-      alert("Comment reported successfully.");
+      await api.post(`/comments/reports/`, payload);
+      alert(`${reportType.replace("_", " ")} reported successfully.`);
       setReportReason("");
       setReportingCommentId(null);
     } catch (error) {
-      console.error("Error reporting comment:", error.response?.data || error.message);
+      console.error("Error reporting:", error.response?.data || error.message);
     }
   };
+  
+
+  // const handleReportComment = async () => {
+  //   if (!reportReason.trim()) {
+  //     alert("Please provide a reason for reporting the comment.");
+  //     return;
+  //   }
+  //   try {
+  //     await api.post(`/comments/reports/`, {
+  //       report_type: "comment",
+  //       comment: reportingCommentId,
+  //       reason: reportReason,
+  //     });
+  //     alert("Comment reported successfully.");
+  //     setReportReason("");
+  //     setReportingCommentId(null);
+  //   } catch (error) {
+  //     console.error("Error reporting comment:", error.response?.data || error.message);
+  //   }
+  // };
 
   const toggleReplies = (commentId) => {
     setExpandedReplies((prev) => ({
@@ -106,12 +134,16 @@ const CommentSection = ({ projectId }) => {
                 <strong>{comment.user}</strong>: {comment.text}
               </p>
               <div className="d-flex align-items-center gap-2">
-                <button
-                  className="btn btn-outline-danger btn-sm"
-                  onClick={() => setReportingCommentId(comment.id)}
-                >
-                  Report
-                </button>
+              <button
+                className="btn btn-outline-danger btn-sm"
+                onClick={() => {
+                  setReportingCommentId(comment.id);
+                  setReportType("comment");
+                }}
+              >
+                Report
+              </button>
+
                 <textarea
                   className="form-control form-control-sm my-1"
                   placeholder="Reply..."
@@ -129,7 +161,31 @@ const CommentSection = ({ projectId }) => {
                 </button>
               </div>
               <div className="replies mt-2 ps-2 border-start">
-                {(expandedReplies[comment.id]
+              {(expandedReplies[comment.id]
+                ? comment.replies
+                : comment.replies.slice(0, 2)
+                ).map((reply) => (
+                <div key={reply.id} className="reply card bg-light mb-1 p-1">
+                  <div className="card-body p-1">
+                    <p className="card-text mb-0" style={{ fontSize: "0.8rem" }}>
+                      <strong>{reply.user}</strong>: {reply.text}
+                    </p>
+                    <div className="text-end">
+                    <button
+                      className="btn btn-outline-danger btn-sm"
+                      onClick={() => {
+                        setReportingCommentId(reply.id);
+                        setReportType("comment_reply");
+                      }}
+                    >
+                      Report Reply
+                    </button>
+
+                    </div>
+                  </div>
+                </div>
+              ))}
+                {/* {(expandedReplies[comment.id]
                     ? comment.replies
                     : comment.replies.slice(0, 2)
                 ).map((reply) => (
@@ -140,7 +196,7 @@ const CommentSection = ({ projectId }) => {
                         </p>
                     </div>
                     </div>
-                ))}
+                ))} */}
                 {comment.replies.length > 2 && (
                     <div className="text-center mt-1">
                     <button
@@ -203,7 +259,7 @@ const CommentSection = ({ projectId }) => {
                 <button
                   type="button"
                   className="btn btn-danger btn-sm"
-                  onClick={handleReportComment}
+                  onClick={handleReport}
                 >
                   Report
                 </button>

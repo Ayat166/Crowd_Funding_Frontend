@@ -49,28 +49,16 @@ const Home = () => {
 
     const renderProjectsSlider = (title, projectsList, sliderRef) => (
         <div className="mb-8 relative">
-            <h1 className="text-2xl font-bold mb-4">{title}</h1>
+            <h1 className="text-2xl font-bold mt-3">{title}</h1>
             {projectsList.length > 0 ? (
                 <div className="relative">
-                    <button
-                        onClick={() => sliderRef.current.slickPrev()}
-                        className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full z-10"
-                    >
-                        ❮
-                    </button>
-                    <button
-                        onClick={() => sliderRef.current.slickNext()}
-                        className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full z-10"
-                    >
-                        ❯
-                    </button>
-
+                    
                     <Slider ref={sliderRef} {...sliderSettings}>
                         {projectsList.map((project) => (
-                            <div key={project.id} className="p-4">
-                                <div className="bg-white shadow-lg rounded-lg p-4">
+                            <div key={project.id} className="p-4 m-4">
+                                <div className="bg-white shadow-lg rounded-lg p-4 ">
                                     {/* Wrap ProjectCard with Link */}
-                                    <Link to={`/projects/${project.id}`}>
+                                    <Link to={`/projects/${project.id}`} style={{ textDecoration: "none" }}>
                                         <ProjectCard project={project} />
                                     </Link>
                                 </div>
@@ -91,18 +79,7 @@ const Home = () => {
             {renderProjectsSlider("Top Rated Projects", projects.topRated, topRatedSliderRef)}
             {renderProjectsSlider("Latest Projects", projects.latest, latestSliderRef)}
             {renderProjectsSlider("Featured Projects", projects.featured, featuredSliderRef)}
-
-            {/* Show Admin Button if user is admin */}
-            {loggedIn && is_superuser && (
-                <div className="text-center mt-8">
-                    <Link
-                        to="/admin/feature-projects"
-                        className="bg-blue-600 text-black px-4 py-2 rounded hover:bg-blue-700"
-                    >
-                        Manage Featured Projects
-                    </Link>
-                </div>
-            )}
+            
         </div>
     );
 };
