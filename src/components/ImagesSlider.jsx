@@ -23,7 +23,14 @@ const ImagesSlider = ({ images, carouselId }) => {
         {images.map((img, index) => (
           <div className={`carousel-item ${index === 0 ? 'active' : ''}`} key={img.id || index}>
             <img
-              src={img.image.startsWith("http") ? img.image : `http://127.0.0.1:8000${img.image}`}
+              src={
+                img.image
+                  ? img.image.startsWith("http")
+                    ? img.image
+                    : `http://127.0.0.1:8000${img.image}`
+                  : "/default-profile.png"
+              }
+              
               className="d-block w-100"
               alt={`Slide ${index + 1}`}
             />

@@ -77,7 +77,7 @@ const DonationComponent = ({ projectId }) => {
           <ul className="list-group">
             {donations.map((donation) => (
               <li key={donation.id} className="list-group-item">
-                <strong>User:</strong> {donation.user_name} -{" "}
+                <strong>User:</strong> {donation.user} -{" "}
                 <strong>Amount:</strong> ${donation.amount} -{" "}
                 <strong>Date:</strong>{" "}
                 {new Date(donation.date_donated).toLocaleString()}

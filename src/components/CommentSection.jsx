@@ -141,7 +141,7 @@ const CommentSection = ({ projectId }) => {
                   setReportType("comment");
                 }}
               >
-                Report
+                Report Comment
               </button>
 
                 <textarea
