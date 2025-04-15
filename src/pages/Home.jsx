@@ -49,7 +49,9 @@ const Home = () => {
 
     const renderProjectsSlider = (title, projectsList, sliderRef) => (
         <div className="mb-8 relative">
-            <h1 className="text-2xl font-bold mt-3">{title}</h1>
+            <h1 style={{ color: "black", fontWeight: "bold", fontSize: "30px", marginTop: "12px" }}>
+            {title}
+            </h1>
             {projectsList.length > 0 ? (
                 <div className="relative">
                     
@@ -79,7 +81,17 @@ const Home = () => {
             {renderProjectsSlider("Top Rated Projects", projects.topRated, topRatedSliderRef)}
             {renderProjectsSlider("Latest Projects", projects.latest, latestSliderRef)}
             {renderProjectsSlider("Featured Projects", projects.featured, featuredSliderRef)}
-            
+            <Link 
+                to="/projects/list" 
+                style={{ 
+                    textDecoration: "none", 
+                    fontWeight: "bold", 
+                    fontSize: "30px"
+                }}
+                >
+                See All Projects
+                </Link>
+
         </div>
     );
 };
