@@ -13,6 +13,7 @@ const CommentSection = ({ projectId }) => {
   const [reportingCommentId, setReportingCommentId] = useState(null);
   const [showAllComments, setShowAllComments] = useState(false); // State to toggle comments display
   const [expandedReplies, setExpandedReplies] = useState({}); // State to toggle replies for each comment
+  const [loggedIn, setLoggedIn] = useState(false);
 
   const [reportType, setReportType] = useState("comment");
 
@@ -25,6 +26,8 @@ const CommentSection = ({ projectId }) => {
         console.error("Error fetching comments:", error);
       }
     };
+    const token = localStorage.getItem("accessToken"); // or whatever token name you're using
+    setLoggedIn(!!token); // sets true if token exists
     fetchComments();
   }, [projectId]);
 
@@ -114,6 +117,8 @@ const CommentSection = ({ projectId }) => {
 
   return (
     <div className="comment-section container mt-3">
+      <h3 className="text-2xl font-bold mt-3">Comments</h3>
+      {loggedIn && (
       <div className="add-comment mb-3">
         <textarea
           className="form-control form-control-sm mb-2"
@@ -126,6 +131,7 @@ const CommentSection = ({ projectId }) => {
           Add Comment
         </button>
       </div>
+      )}
       <div className="comments-list">
         {displayedComments.map((comment) => (
           <div key={comment.id} className="comment card mb-2 p-2">
@@ -133,6 +139,7 @@ const CommentSection = ({ projectId }) => {
               <p className="card-text mb-1" style={{ fontSize: "0.9rem" }}>
                 <strong>{comment.user}</strong>: {comment.text}
               </p>
+              {loggedIn && (
               <div className="d-flex align-items-center gap-2">
               <button
                 className="btn btn-outline-danger btn-sm"
@@ -160,6 +167,7 @@ const CommentSection = ({ projectId }) => {
                   Reply
                 </button>
               </div>
+              )}
               <div className="replies mt-2 ps-2 border-start">
               {(expandedReplies[comment.id]
                 ? comment.replies
@@ -170,6 +178,7 @@ const CommentSection = ({ projectId }) => {
                     <p className="card-text mb-0" style={{ fontSize: "0.8rem" }}>
                       <strong>{reply.user}</strong>: {reply.text}
                     </p>
+                    {loggedIn && (
                     <div className="text-end">
                     <button
                       className="btn btn-outline-danger btn-sm"
@@ -182,6 +191,7 @@ const CommentSection = ({ projectId }) => {
                     </button>
 
                     </div>
+                    )}
                   </div>
                 </div>
               ))}

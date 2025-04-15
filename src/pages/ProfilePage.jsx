@@ -136,7 +136,7 @@ function ProfilePage() {
                 <thead>
                   <tr>
                     <th>Title</th>
-                    <th>Donation</th>
+                    <th>Current Donations</th>
                     <th>Created at</th>
                   </tr>
                 </thead>
@@ -145,7 +145,7 @@ function ProfilePage() {
                     projects.map((project, index) => (
                       <tr key={index}>
                         <td>{project.title}</td>
-                        <td>{project.donation || 0} L.E</td>
+                        <td>{project.total_donations || 0} L.E</td>
                         <td>
                           {new Date(project.created_at).toLocaleDateString()}
                         </td>

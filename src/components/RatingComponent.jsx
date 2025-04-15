@@ -6,6 +6,7 @@ const RatingComponent = ({ projectId }) => {
   const [averageRating, setAverageRating] = useState(0); // Default to 0
   const [newRating, setNewRating] = useState(0);
   const [error, setError] = useState(null);
+  const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
     // Fetch ratings for the project
@@ -18,7 +19,8 @@ const RatingComponent = ({ projectId }) => {
         setError(err.response?.data || "Error fetching ratings");
       }
     };
-
+    const token = localStorage.getItem("accessToken"); // or whatever token name you're using
+    setLoggedIn(!!token); // sets true if token exists
     fetchRatings();
   }, [projectId]);
 
@@ -78,7 +80,7 @@ const RatingComponent = ({ projectId }) => {
 
       {/* Average Rating */}
       <div className="mb-4">
-        <h4>Average Rating: {averageRating ? averageRating.toFixed(1) : "No ratings yet"} / 5</h4>
+        <h4> {averageRating ? averageRating.toFixed(1) : "No ratings yet"} / 5</h4>
         <div style={{ fontSize: "1.5rem" }}>{renderStars(Math.round(averageRating))}</div>
       </div>
 
@@ -97,6 +99,7 @@ const RatingComponent = ({ projectId }) => {
       </div>
 
       {/* Submit New Rating */}
+      {loggedIn && (
       <div className="card p-3">
         <h4>Submit Your Rating</h4>
         <div className="mb-3">
@@ -122,6 +125,7 @@ const RatingComponent = ({ projectId }) => {
           Submit Rating
         </button>
       </div>
+      )}
     </div>
   );
 };

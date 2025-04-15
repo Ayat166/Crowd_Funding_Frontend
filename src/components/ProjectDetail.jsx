@@ -1,39 +1,37 @@
-import React, { useState, useEffect , useRef } from "react";
-import { useParams } from "react-router-dom"; // To read the ID from the URL
-import api from "../utils/axios"; // Axios instance
-import DonationComponent from "./DonationComponent"; // Import the DonationComponent
-import CommentSection from "./CommentSection"; // Import the CommentSection component
-import RatingComponent from "./RatingComponent"; // Import the RatingComponent
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import api from "../utils/axios";
+import DonationComponent from "./DonationComponent";
+import CommentSection from "./CommentSection";
+import RatingComponent from "./RatingComponent";
 import ImagesSlider from "./ImagesSlider";
 
 const ProjectDetail = () => {
-  const { id } = useParams(); // Get the project ID from the URL
-  const [project, setProject] = useState(null); // State to hold the project data
+  const { id } = useParams();
+  const [project, setProject] = useState(null);
   const [reportingProjectId, setReportingProjectId] = useState(null);
   const [reportReason, setReportReason] = useState("");
   const [reportType, setReportType] = useState("project");
   const userId = localStorage.getItem("userId");
+  const [loggedIn, setLoggedIn] = useState(false);
+
   useEffect(() => {
-    // Fetch the single project details when the component mounts
     const fetchProject = async () => {
       try {
-        const response = await api.get(`/projects/${id}/`); // API request to get the single project
-        setProject(response.data); // Set the project data into the state
+        const response = await api.get(`/projects/${id}/`);
+        setProject(response.data);
       } catch (error) {
-        console.error("Error fetching project details:", error); // Handle any errors
+        console.error("Error fetching project details:", error);
       }
     };
-
-    fetchProject(); // Call the function to fetch data
-  }, [id]); // Dependency array with the ID to re-fetch when the project ID changes
+    const token = localStorage.getItem("accessToken");
+    setLoggedIn(!!token);
+    fetchProject();
+  }, [id]);
 
   const handleCancelProject = async () => {
     const confirmCancel = window.confirm("Are you sure you want to cancel this project? This action cannot be undone.");
-  
-    if (!confirmCancel) {
-      return; // Exit if user cancels
-    }
-  
+    if (!confirmCancel) return;
     try {
       const response = await api.patch(`/projects/${id}/cancel/`);
       alert(response.data.message);
@@ -43,25 +41,17 @@ const ProjectDetail = () => {
       alert("Unable to cancel the project.");
     }
   };
-  
 
-  if (!project) {
-    return <div className="loading">Loading...</div>; // Show a loading state if the project is not yet fetched
-  }
   const handleReport = async () => {
     if (!reportReason.trim()) {
       alert("Please provide a reason.");
       return;
     }
-  
     const payload = {
       report_type: reportType,
       reason: reportReason,
     };
-  
-
     if (reportType === "project") payload.project = reportingProjectId;
- 
     try {
       await api.post(`/comments/reports/`, payload);
       alert(`${reportType.replace("_", " ")} reported successfully.`);
@@ -72,97 +62,104 @@ const ProjectDetail = () => {
     }
   };
 
+  if (!project) {
+    return <div className="loading">Loading...</div>;
+  }
+
   return (
     <div
-      className="project-detail-container"
-      style={{ display: "flex", gap: "20px", padding: "20px" }}
+      className="project-detail-wrapper"
+      style={{
+        paddingLeft: "150px",
+        paddingRight: "150px",
+        paddingTop: "20px",
+        paddingBottom: "20px",
+      }}
     >
-      {/* Main Content (3/4 of the page) */}
       <div
-        style={{
-          flex: "3",
-          backgroundColor: "#f9f9f9",
-          padding: "20px",
-          borderRadius: "8px",
-          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-        }}
+        className="project-detail-container"
+        style={{ display: "flex", gap: "20px" }}
       >
-        <h1 style={{ fontSize: "2rem", marginBottom: "20px" }}>
-          {project.title}
-        </h1>
-
-        <ImagesSlider images={project.uploaded_images} carouselId={`carousel-${project.id}`} />
-
-        <p
+        {/* Main Content */}
+        <div
           style={{
-            fontSize: "1.2rem",
-            lineHeight: "1.6",
-            marginBottom: "20px",
+            flex: "3",
+            backgroundColor: "#f9f9f9",
+            padding: "20px",
+            borderRadius: "8px",
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
           }}
         >
-          {project.details}
-        </p>
-        <p style={{ fontSize: "1rem", marginBottom: "10px" }}>
-          <strong>Target:</strong> ${project.total_target}
-        </p>
-        <p style={{ fontSize: "1rem", marginBottom: "20px" }}>
-          <strong>Current Donations:</strong> ${project.total_donations}
-        </p>
-        <button
-                className="btn btn-outline-danger btn-sm"
-                onClick={() => {
-                  setReportingProjectId(project.id);
-                  setReportType("project");
-                }}
-              >
-                Report Project
-        </button>
-        <br />
-        <br />
-        {project.is_active && userId == project.creator.id &&  (
-          <button
-            onClick={handleCancelProject}
-            className="btn btn-danger"
-            style={{ marginBottom: "20px" }}
-          >
-            Cancel Project
-          </button>
-        )}
+          <h1 style={{ fontSize: "2rem", marginBottom: "20px" }}>{project.title}</h1>
 
-        {/* Add the DonationComponent */}
-        <div style={{ marginTop: "20px" }}>
-          <DonationComponent projectId={id} />
+          <ImagesSlider images={project.uploaded_images} carouselId={`carousel-${project.id}`} />
+
+          <p style={{ fontSize: "1.2rem", lineHeight: "1.6", marginBottom: "20px" }}>
+            {project.details}
+          </p>
+
+          <p style={{ fontSize: "1rem", marginBottom: "10px" }}>
+            <strong>Target:</strong> ${project.total_target}
+          </p>
+          <p style={{ fontSize: "1rem", marginBottom: "20px" }}>
+            <strong>Current Donations:</strong> ${project.total_donations}
+          </p>
+
+          {loggedIn && (
+            <button 
+              className="btn btn-outline-danger btn-sm"
+              onClick={() => {
+                setReportingProjectId(project.id);
+                setReportType("project");
+              }}
+            >
+              Report Project
+            </button>
+          )}
+
+          <br />
+          <br />
+          {project.is_active && userId == project.creator.id && (
+            <button
+              onClick={handleCancelProject}
+              className="btn btn-danger"
+              style={{ marginBottom: "20px" }}
+            >
+              Cancel Project
+            </button>
+          )}
+
+          <div style={{ marginTop: "20px" }}>
+            <DonationComponent projectId={id} />
+          </div>
+
+          <div style={{ marginTop: "40px" }}>
+            <CommentSection projectId={id} />
+          </div>
         </div>
 
-        {/* Add the CommentSection */}
-        <div style={{ marginTop: "40px" }}>
-          <CommentSection projectId={id} />
+        {/* Sidebar */}
+        <div
+          style={{
+            flex: "1",
+            backgroundColor: "#ffffff",
+            padding: "20px",
+            borderRadius: "8px",
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+          }}
+        >
+          <RatingComponent projectId={id} />
         </div>
       </div>
 
-      {/* Sidebar (1/4 of the page) */}
-      <div
-        style={{
-          flex: "1",
-          backgroundColor: "#ffffff",
-          padding: "20px",
-          borderRadius: "8px",
-          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-        }}
-      >
-        <h3 style={{ fontSize: "1.5rem", marginBottom: "20px" }}>
-          Rate this Project
-        </h3>
-        {/* Add the RatingComponent */}
-        <RatingComponent projectId={id} />
-      </div>
+      {/* Report Modal */}
       {reportingProjectId && (
         <div className="modal show d-block" tabIndex="-1">
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title" style={{ fontSize: "1rem" }}>
-                  Report Comment
+                  Report Project
                 </h5>
                 <button
                   type="button"
@@ -173,7 +170,7 @@ const ProjectDetail = () => {
               <div className="modal-body">
                 <textarea
                   className="form-control form-control-sm"
-                  placeholder="Enter the reason for reporting this comment..."
+                  placeholder="Enter the reason for reporting this project..."
                   value={reportReason}
                   onChange={(e) => setReportReason(e.target.value)}
                   style={{ fontSize: "0.9rem" }}
