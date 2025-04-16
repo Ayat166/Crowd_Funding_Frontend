@@ -5,6 +5,7 @@ import DonationComponent from "./DonationComponent";
 import CommentSection from "./CommentSection";
 import RatingComponent from "./RatingComponent";
 import ImagesSlider from "./ImagesSlider";
+import "./css/ProjectDetail.css"; // Add this for styles
 
 const ProjectDetail = () => {
   const { id } = useParams();
@@ -24,6 +25,7 @@ const ProjectDetail = () => {
         console.error("Error fetching project details:", error);
       }
     };
+
     const token = localStorage.getItem("accessToken");
     setLoggedIn(!!token);
     fetchProject();
@@ -47,10 +49,7 @@ const ProjectDetail = () => {
       alert("Please provide a reason.");
       return;
     }
-    const payload = {
-      report_type: reportType,
-      reason: reportReason,
-    };
+    const payload = { report_type: reportType, reason: reportReason };
     if (reportType === "project") payload.project = reportingProjectId;
     try {
       await api.post(`/comments/reports/`, payload);
@@ -62,52 +61,27 @@ const ProjectDetail = () => {
     }
   };
 
-  if (!project) {
-    return <div className="loading">Loading...</div>;
-  }
+  if (!project) return <div className="loading">Loading...</div>;
 
   return (
-    <div
-      className="project-detail-wrapper"
-      style={{
-        paddingLeft: "150px",
-        paddingRight: "150px",
-        paddingTop: "20px",
-        paddingBottom: "20px",
-      }}
-    >
-      <div
-        className="project-detail-container"
-        style={{ display: "flex", gap: "20px" }}
-      >
+    <div className="project-detail-wrapper">
+      <div className="project-detail-container">
         {/* Main Content */}
-        <div
-          style={{
-            flex: "3",
-            backgroundColor: "#f9f9f9",
-            padding: "20px",
-            borderRadius: "8px",
-            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-          }}
-        >
-          <h1 style={{ fontSize: "2rem", marginBottom: "20px" }}>{project.title}</h1>
+        <div className="project-main">
+          <h1 className="fw-bold text-success">{project.title}</h1>
 
           <ImagesSlider images={project.uploaded_images} carouselId={`carousel-${project.id}`} />
 
-          <p style={{ fontSize: "1.2rem", lineHeight: "1.6", marginBottom: "20px" }}>
-            {project.details}
-          </p>
+          <p className="project-description">{project.details}</p>
 
-          <p style={{ fontSize: "1rem", marginBottom: "10px" }}>
-            <strong>Target:</strong> ${project.total_target}
-          </p>
-          <p style={{ fontSize: "1rem", marginBottom: "20px" }}>
-            <strong>Current Donations:</strong> ${project.total_donations}
-          </p>
+          <div className="project-financials">
+            <p><strong>Target:</strong> ${project.total_target}</p>
+            <p><strong>Current Donations:</strong> ${project.total_donations}</p>
+          </div>
 
           {loggedIn && (
             <button 
-              className="btn btn-outline-danger btn-sm"
+              className="btn btn-warning btn-sm"
               onClick={() => {
                 setReportingProjectId(project.id);
                 setReportType("project");
@@ -117,37 +91,23 @@ const ProjectDetail = () => {
             </button>
           )}
 
-          <br />
-          <br />
           {project.is_active && userId == project.creator.id && (
-            <button
-              onClick={handleCancelProject}
-              className="btn btn-danger"
-              style={{ marginBottom: "20px" }}
-            >
+            <button onClick={handleCancelProject} className="btn btn-danger cancel-btn">
               Cancel Project
             </button>
           )}
 
-          <div style={{ marginTop: "20px" }}>
+          <div className="donation-section">
             <DonationComponent projectId={id} />
           </div>
 
-          <div style={{ marginTop: "40px" }}>
+          <div className="comment-section">
             <CommentSection projectId={id} />
           </div>
         </div>
 
         {/* Sidebar */}
-        <div
-          style={{
-            flex: "1",
-            backgroundColor: "#ffffff",
-            padding: "20px",
-            borderRadius: "8px",
-            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-          }}
-        >
+        <div className="project-sidebar">
           <RatingComponent projectId={id} />
         </div>
       </div>
@@ -156,41 +116,22 @@ const ProjectDetail = () => {
       {reportingProjectId && (
         <div className="modal show d-block" tabIndex="-1">
           <div className="modal-dialog">
-            <div className="modal-content">
+            <div className="modal-content bg-dark text-white">
               <div className="modal-header">
-                <h5 className="modal-title" style={{ fontSize: "1rem" }}>
-                  Report Project
-                </h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  onClick={() => setReportingProjectId(null)}
-                ></button>
+                <h5 className="modal-title">Report Project</h5>
+                <button type="button" className="btn-close" onClick={() => setReportingProjectId(null)}></button>
               </div>
               <div className="modal-body">
                 <textarea
-                  className="form-control form-control-sm"
-                  placeholder="Enter the reason for reporting this project..."
+                  className="form-control"
+                  placeholder="Enter the reason..."
                   value={reportReason}
                   onChange={(e) => setReportReason(e.target.value)}
-                  style={{ fontSize: "0.9rem" }}
                 />
               </div>
               <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-secondary btn-sm"
-                  onClick={() => setReportingProjectId(null)}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-danger btn-sm"
-                  onClick={handleReport}
-                >
-                  Report
-                </button>
+                <button className="btn btn-secondary btn-sm" onClick={() => setReportingProjectId(null)}>Cancel</button>
+                <button className="btn btn-danger btn-sm" onClick={handleReport}>Report</button>
               </div>
             </div>
           </div>

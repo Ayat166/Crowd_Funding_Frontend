@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../styles/categoryDropdown.css";
-import api from "../utils/axios"; // Axios instance
+import api from "../utils/axios";
 
 const CategoryDropdown = () => {
     const [categories, setCategories] = useState([]);
@@ -20,12 +20,13 @@ const CategoryDropdown = () => {
     }, []);
 
     return (
-        <li className="nav-item dropdown"
-        onMouseEnter={(e) => e.currentTarget.querySelector(".dropdown-menu").classList.add("show")}
-        onMouseLeave={(e) => e.currentTarget.querySelector(".dropdown-menu").classList.remove("show")}
-        > 
+        <li
+            className="nav-item dropdown"
+            onMouseEnter={(e) => e.currentTarget.querySelector(".dropdown-menu").classList.add("show")}
+            onMouseLeave={(e) => e.currentTarget.querySelector(".dropdown-menu").classList.remove("show")}
+        >
             <a
-                className="nav-link dropdown-toggle"
+                className="nav-link dropdown-toggle text-light"
                 href="#"
                 role="button"
                 data-bs-toggle="dropdown"
@@ -33,11 +34,11 @@ const CategoryDropdown = () => {
             >
                 Category
             </a>
-            <ul className="dropdown-menu ">
+            <ul className="dropdown-menu custom-dropdown-menu">
                 {categories.length > 0 ? (
                     categories.map((category) => (
                         <li key={category.id}>
-                            <a className="dropdown-item" href={`/category/${category.id}`}>
+                            <a className="dropdown-item custom-dropdown-item" href={`/category/${category.id}`}>
                                 {category.name}
                             </a>
                         </li>

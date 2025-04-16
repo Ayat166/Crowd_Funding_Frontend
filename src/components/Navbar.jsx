@@ -12,7 +12,7 @@ function Navbar() {
   const [showConfirm, setShowConfirm] = useState(false);
   const [is_superuser, set_superuser] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation(); // ✅ to get the current path
+  const location = useLocation();
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -45,7 +45,6 @@ function Navbar() {
 
   const handleLogout = async () => {
     let token = localStorage.getItem("accessToken");
-
     if (!token || isTokenExpired(token)) {
       token = await refreshAccessToken();
     }
@@ -65,12 +64,10 @@ function Navbar() {
         { refresh_token: localStorage.getItem("refreshToken") },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
       localStorage.clear();
       setUserName(null);
       setLoggedIn(false);
       navigate("/");
-      console.log("You have successfully logged out");
     } catch (err) {
       console.error("Logout failed:", err.response?.data || err.message);
       alert("Logout failed, please try again.");
@@ -86,19 +83,26 @@ function Navbar() {
     }
   }
 
-  // ✅ Helper function for active class
-  const isActive = (path) => location.pathname === path ? "nav-link active" : "nav-link";
+  const isActive = (path) =>
+    location.pathname === path ? "nav-link active text-warning" : "nav-link text-light";
 
   return (
-    <nav className="navbar navbar-expand-lg bg-body-tertiary" style={{ backgroundColor: "#e3f2fd" }}>
+    <nav className="navbar navbar-expand-lg" style={{ backgroundColor: "#2c3e50" }}>
       <div className="container-fluid">
-        <a className="navbar-brand" href="#">Crowd Funding</a>
-        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll">
+        <Link to="/" className="navbar-brand d-flex align-items-center text-warning">
+          <img
+            src="src/assets/pngwing.com.png"
+            alt="Logo"
+            style={{ width: "40px", height: "40px", marginRight: "10px" }}
+          />
+          Crowd Funding
+        </Link>
+        <button className="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll">
           <span className="navbar-toggler-icon"></span>
         </button>
 
         <div className="collapse navbar-collapse" id="navbarScroll">
-          <ul className="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style={{ height: "var(--bs-scroll-height)" }}>
+          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
               <Link to="/" className={isActive("/")}>Home</Link>
             </li>
@@ -106,7 +110,6 @@ function Navbar() {
               <Link to="/about" className={isActive("/about")}>About</Link>
             </li>
             <CategoryDropdown />
-
             {loggedIn && is_superuser && (
               <>
                 <li className="nav-item">
@@ -124,24 +127,24 @@ function Navbar() {
 
           <form className="d-flex me-3" role="search" onSubmit={handleSearch}>
             <input
-              className="form-control me-2"
+              className="form-control me-2 bg-light border-0"
               type="search"
               placeholder="Search"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <button className="btn btn-outline-success" type="submit">Search</button>
+            <button className="btn btn-warning text-dark" type="submit">Search</button>
           </form>
 
           {userName ? (
             <>
-              <Link to="/profile" className={isActive("/profile") + " btn btn-secondary me-3"}>
-                <p className="m-2">Welcome, {userName}!</p>
+              <Link to="/profile" className="btn btn-outline-success text-light me-3">
+                Welcome, {userName}
               </Link>
-              <button className="btn btn-danger" onClick={() => setShowConfirm(true)}>Logout</button>
+              <button className="btn btn-outline-danger" onClick={() => setShowConfirm(true)}>Logout</button>
             </>
           ) : (
-            <Link to="/login" className={isActive("/login") + " btn btn-outline-primary me-3 "}><p className="m-2">Login</p></Link>
+            <Link to="/login" className="btn btn-outline-light me-3">Login</Link>
           )}
         </div>
       </div>
@@ -149,7 +152,7 @@ function Navbar() {
       {showConfirm && (
         <div className="modal show fade d-block" style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
           <div className="modal-dialog">
-            <div className="modal-content">
+            <div className="modal-content bg-dark text-light">
               <div className="modal-header">
                 <h5 className="modal-title">Confirm Logout</h5>
                 <button type="button" className="btn-close" onClick={() => setShowConfirm(false)}></button>
