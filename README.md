@@ -1,7 +1,7 @@
 # Crowd-Funding Web App (Frontend)
 
 ## 🌐 Live Preview
-<video controls src="src/assets/Recording 2025-04-17 175017.mp4" title="project demo"></video>
+<video controls src="src/assets/Recording 2025-04-17 175017 (1).mp4" title="demo"></video>
 
 ## 📌 Project Overview
 This is the **frontend** for the **Crowd-Funding Web Application**, built using **React.js** with **Vite** for fast development and **Bootstrap** for styling. The web app allows users to create fundraising projects, donate, comment, and manage their profiles.
