@@ -1,5 +1,8 @@
 # Crowd-Funding Web App (Frontend)
 
+## 🌐 Live Preview
+<video controls src="src/assets/Recording 2025-04-17 175017.mp4" title="project demo"></video>
+
 ## 📌 Project Overview
 This is the **frontend** for the **Crowd-Funding Web Application**, built using **React.js** with **Vite** for fast development and **Bootstrap** for styling. The web app allows users to create fundraising projects, donate, comment, and manage their profiles.
 
@@ -62,31 +65,9 @@ The frontend will be available at **`http://localhost:5173/`**.
  ├💚 README.md     # Project Documentation
 ```
 
----
+## 📡 Backend Setup
 
-## 🌿 **Contributing (Branching Strategy)**
-Each team member should work on their feature separately using Git branches.
+The backend is available in this repo:  
+👉 [Life Tracker Backend](https://github.com/Ayat166/Crowd_Funding_Backend.git)
 
-### 1️⃣ Pull the Latest Code Before Working
-```sh
-git pull origin main
-```
-
-### 2️⃣ Create a New Branch
-```sh
-git checkout -b your-name   # ex: checkout -b amera
-```
-
-### 3️⃣ Make Changes & Commit
-```sh
-git add .
-git commit -m "Added navbar component"
-```
-
-### 4️⃣ Push to GitHub
-```sh
-git push origin your-name
-```
-
-Happy Coding! 🚀
-
+Make sure it's running on `http://localhost:8000` (or update Axios base URL).

@@ -13,7 +13,6 @@ import ProjectForm from "./components/ProjectForm"; // Fixed import path
 import CategoryPage from "./pages/CategoryPage";
 import SearchResultsPage from "./pages/SearchResultsPage";
 import FeatureProjectsAdmin from "./pages/FeatureProjectsAdmin"; // Fixed import path
-import { fetchAllProjects } from "./api"; // Fixed import path
 import TermsPage from "./pages/TermsPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage"; 
 import ProfileEdit from "./pages/ProfileEdit";
@@ -21,7 +20,7 @@ import AccountDelete from "./pages/AccountDelete";
 import ResetPasswordRequest from "./pages/ResetPasswordRequest";
 import ResetPasswordConfirm from "./pages/ResetPasswordConfirm";
 import { useLocation } from "react-router-dom";
-
+import About from "./pages/About"; // Fixed import path
 
 function App() {
   const location = useLocation();
@@ -49,6 +48,8 @@ function App() {
             <Route path="/projects/create" element={<ProjectForm />} />
             <Route path="/projects/:id" element={<ProjectDetail />} />
             
+            <Route path="/about" element={<About />} />
+
             <Route path="/terms" element={<TermsPage />} />
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
 
